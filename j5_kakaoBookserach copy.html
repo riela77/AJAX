@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <meta charset="UTF-8">
+    <title>j1_CDajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script> 
+        $(function () {
+            $("input").keyup(function(e){
+                if (e.keyCode == 13) {
+                    $("button").trigger("click");
+                }
+            });
+
+            $("button").click(function(){
+                var searchTxt = $("input").val();
+                $.ajax({
+                    url: "https://dapi.kakao.com/v3/search/book",
+                    data: { query: searchTxt,size:30 },
+                    beforeSend:function(req){
+                        req.setRequestHeader("Authorization","KakaoAK b3c4e78b1c3fcee1debeaf43733fc4ae");
+                    },
+                    success: function(data){
+                        // alert(JSON.stringify(data, null, 2)); // 보기 쉽게 들여쓰기됨
+                        // console.log(data);
+                        $.each(data.documents,function(i,b){
+                                var title = b.title;
+                                var desc = b.contents;
+                                var status=b.status;
+                                var row = "<tr><td>" + title + "</td><td>"+ status + "</td><td>" + desc + "</td></tr>";
+                                $("table").append(row);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body> 
+    <input placeholder="책 제목을 입력하세요"><button>검색</button>
+    <table border="1">
+        <tr>
+            <th>제목</th>
+            <th>내용</th>
+            <th>줄거리</th>
+        </tr>
+    </table>
+</body>
+</html>
